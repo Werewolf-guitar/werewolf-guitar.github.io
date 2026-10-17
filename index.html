@@ -204,6 +204,9 @@ footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px}
 .calc-more a{font-family:'Alumni Sans',sans-serif;font-weight:600;font-size:22px;letter-spacing:.08em;border-bottom:2px solid var(--rust);color:var(--rust);white-space:nowrap}
 .calc-more a:hover{color:var(--ink);border-color:var(--ink)}
 @media(max-width:860px){.calc-more{margin-right:5px;padding:16px 18px}}
+.item .pr.ind{font-size:18px}
+.calc-sum.ind{font-size:clamp(40px,5vw,56px)}
+.calc-r .calc-sum small{display:block;font-size:22px;letter-spacing:.06em;color:var(--mustard);margin:6px 0 0;font-family:inherit}
 .calc-copy{margin-top:14px;background:none;border:none;color:var(--paper);text-decoration:underline;font:inherit;font-size:14px;cursor:pointer;align-self:flex-start;padding:0}
 .calc-r small{margin-top:10px;font-size:12px;color:#b8a888}
 @media(max-width:860px){.calc{grid-template-columns:1fr;box-shadow:5px 5px 0 var(--ink)}.calc-l,.calc-r{padding:var(--s3) 18px}.calc-row{grid-template-columns:1fr}}
@@ -288,8 +291,8 @@ footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px}
     <div class="item"><div class="n">01</div><h3>ПЕСНЯ В ПОДАРОК</h3><p>Расспросы, демо, готовый трек в MP3, WAV или M4A, текст по желанию, две правки.</p><div class="pr">3 500 ₽</div></div>
     <div class="item"><div class="n">02</div><h3>ВАШИМ ГОЛОСОМ</h3><p>То же самое, но поёте вы. Достаточно записи на телефон.</p><div class="pr">5 000 ₽</div></div>
     <div class="item"><div class="n">03</div><h3>ДЛЯ КОМПАНИИ</h3><p>Юбилей фирмы, корпоратив, гимн. Идею в 2–3 строках пришлю бесплатно ещё до начала работы.</p><div class="pr">10 000 ₽</div></div>
-    <div class="item"><div class="n">04</div><h3>КЛИП</h3><p>По вашим фото людей и мест. Есть идея сценария — опишите, нет — предложу 2–3 варианта.</p><div class="pr">8 000 ₽</div></div>
-    <div class="item"><div class="n">05</div><h3>ПЕСНЯ + КЛИП</h3><p>По отдельности вышло бы 11 500 ₽.</p><div class="pr">10 000 ₽</div></div>
+    <div class="item"><div class="n">04</div><h3>КЛИП</h3><p>По вашим фото людей и мест. Есть идея сценария — опишите, нет — предложу 2–3 варианта. Цена зависит от длины и сложности.</p><div class="pr ind">Рассчитывается индивидуально</div></div>
+    <div class="item"><div class="n">05</div><h3>ПЕСНЯ + КЛИП</h3><p>Песня — по цене выбранной песни, клип к ней рассчитаю индивидуально, до начала работы.</p><div class="pr ind">Рассчитывается индивидуально</div></div>
     <div class="item hot"><div class="n">!</div><h3>СРОЧНО</h3><p>Песня за 2 дня, клип за 5 дней — быстрее клип не сделать. Шаги те же, просто идут плотнее.</p><div class="pr">+50%</div></div>
   </div>
   <div class="terms rv">
@@ -315,15 +318,15 @@ footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px}
     </div>
     <div class="calc-r" aria-live="polite">
       <div class="calc-k">ПО ВАШЕМУ ВЫБОРУ</div>
-      <div class="calc-sum"><span id="sum">3 500</span> ₽</div>
+      <div class="calc-sum" id="sumwrap"><span id="sum">3 500</span> ₽</div>
       <div class="calc-srok" id="srok">Срок: 3–5 дней</div>
-      <p>Это точная цена. Демо на 30 секунд бесплатно, до оплаты. В цену входят две правки, ещё две — 500 ₽ за обе.</p>
+      <p id="calc-hint">Это точная цена. Демо на 30 секунд бесплатно, до оплаты. В цену входят две правки, ещё две — 500 ₽ за обе.</p>
       <a class="btn" id="calc-go" href="https://t.me/Werewolf_guitar" target="_blank" rel="noopener">ОТПРАВИТЬ В TELEGRAM</a>
       <button type="button" class="calc-copy" id="calc-copy">Скопировать текст заявки</button>
       <small>Расчёт остаётся у вас на экране: сайт ничего не сохраняет и не отправляет.</small>
     </div>
   </div>
-  <div class="calc-more rv"><p><b>Нужен подробный расчёт?</b> Песня компании своим голосом, песня с клипом, срочно — полный калькулятор покажет точную сумму, срок и из чего она сложилась.</p><a href="https://pesnya-kalkulyator.website.yandexcloud.net/" target="_blank" rel="noopener">ПОЛНЫЙ КАЛЬКУЛЯТОР →</a></div>
+  <div class="calc-more rv"><p><b>Нужен подробный расчёт?</b> Песня компании своим голосом, срочно, с клипом или без — полный калькулятор покажет цену песни, срок и из чего она сложилась.</p><a href="https://pesnya-kalkulyator.website.yandexcloud.net/" target="_blank" rel="noopener">ПОЛНЫЙ КАЛЬКУЛЯТОР →</a></div>
 </div></section>
 
 <!-- 5. Отзывы + примеры -->
@@ -415,14 +418,19 @@ const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.targ
 document.querySelectorAll('.rv').forEach(el=>io.observe(el));
 // калькулятор: цены из брифа, срочно +50%
 (()=>{
-  const P={song:[3500,'Песня в подарок','3–5 дней','2 дня'],voice:[5000,'Песня вашим голосом','3–5 дней','2 дня'],corp:[10000,'Песня для компании','3–5 дней','2 дня'],clip:[8000,'Клип','5–10 дней','5 дней'],pack:[10000,'Песня + клип','3–5 дней + 5–10 на клип','2 дня + 5 на клип']};
+  const P={song:[3500,'Песня в подарок','3–5 дней','2 дня'],voice:[5000,'Песня вашим голосом','3–5 дней','2 дня'],corp:[10000,'Песня для компании','3–5 дней','2 дня'],clip:[null,'Клип','5–10 дней','5 дней'],pack:[null,'Песня + клип','3–5 дней + 5–10 на клип','2 дня + 5 на клип']}; // клип: null = индивидуальный расчёт (с 17.10.2026)
   const $=id=>document.getElementById(id), fmt=n=>n.toLocaleString('ru-RU').replace(/ |,/g,' ');
+  const HINT=$('calc-hint').textContent;
   let text='';
   function upd(){
     const v=document.querySelector('input[name=vid]:checked').value, s=$('srochno').checked, [base,name,t,tf]=P[v];
-    const sum=s?Math.round(base*1.5):base, komu=$('komu').value.trim();
-    $('sum').textContent=fmt(sum); $('srok').textContent='Срок: '+(s?tf:t);
-    text='Здравствуйте! Хочу заказать: '+name+(s?', срочно':'')+'. Повод: '+$('povod').value.toLowerCase()+'.'+(komu?' Для кого: '+komu+'.':'')+' По калькулятору на сайте: '+fmt(sum)+' ₽.';
+    const komu=$('komu').value.trim(), ind=base==null, song=v==='pack'?3500*(s?1.5:1):0;
+    $('sumwrap').classList.toggle('ind',ind);
+    $('sumwrap').innerHTML=ind?(v==='pack'?'Песня '+fmt(song)+' ₽<small>клип — индивидуально</small>':'Индивидуально'):'<span id="sum"></span> ₽';
+    if(!ind)$('sum').textContent=fmt(s?Math.round(base*1.5):base);
+    $('srok').textContent='Срок: '+(s?tf:t);
+    $('calc-hint').textContent=ind?'Стоимость клипа зависит от длины и сложности — назову её до начала работы. '+(v==='pack'?'Песня — точная цена, демо на 30 секунд до оплаты.':''):HINT;
+    text='Здравствуйте! Хочу заказать: '+name+(s?', срочно':'')+'. Повод: '+$('povod').value.toLowerCase()+'.'+(komu?' Для кого: '+komu+'.':'')+(ind?(v==='pack'?' По калькулятору на сайте: песня '+fmt(song)+' ₽, клип — рассчитать индивидуально.':' Стоимость клипа — рассчитать индивидуально.'):' По калькулятору на сайте: '+fmt(s?Math.round(base*1.5):base)+' ₽.');
     $('calc-go').href='https://t.me/Werewolf_guitar?text='+encodeURIComponent(text);
   }
   document.querySelectorAll('#raschet input,#raschet select').forEach(el=>el.addEventListener('input',upd));
